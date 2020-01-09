@@ -15,6 +15,8 @@ flutter packages get
  */
 
 void main() {
+  // https://stackoverflow.com/questions/57689492/flutter-unhandled-exception-servicesbinding-defaultbinarymessenger-was-accesse
+  WidgetsFlutterBinding.ensureInitialized();
   Store.instance = new Store(storageProvider: new FlutterStorageProvider());
 
   runApp(new TodoApp());
@@ -60,7 +62,8 @@ class FlutterStorageProvider implements StorageProvider {
   Future<bool> delete(String pathOrKey) async {
     var dir = await getApplicationDocumentsDirectory();
     var file = new File.fromUri(dir.uri.resolve(pathOrKey));
-    await file.delete();
+    if (await file.exists())
+      await file.delete();
 
     return true;
   }
